@@ -4,10 +4,11 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/flip-companion
+ExecStart=/usr/local/bin/flip-companion --lease-socket /tmp/gamescope-lease.sock  --ui-scale 2.0
 Restart=on-failure
 RestartSec=3
-Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
 
 [Install]
 WantedBy=graphical-session.target
+

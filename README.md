@@ -11,6 +11,11 @@ Coming up:
 * Fine-tune looks so it blends with SteamOS better
 * Proper build and install instructions
 
+Disclaimer:
+
+Modified with heavy AI usage. Please do not use my changes as an example of how to implement
+ANYTHING in Rust, Slint or Tokio.
+
 # Flip Companion
 
 Bottom-screen companion app for the **AYANEO Flip DS** running [Bazzite](https://bazzite.gg/).

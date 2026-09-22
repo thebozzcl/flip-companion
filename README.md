@@ -1,3 +1,16 @@
+# Fork notes
+
+* Fixes so it works on my AYANEO Flip 1S DS
+* Added global scaling multiplier
+* Added custom "theme" support - right now it's just color overrides
+* "Brightness" follows top device screen... not really, it just scales the rendered brightness.
+  I haven't found a way to modify the screen's backlight brightness itself.
+
+Coming up:
+
+* Fine-tune looks so it blends with SteamOS better
+* Proper build and install instructions
+
 # Flip Companion
 
 Bottom-screen companion app for the **AYANEO Flip DS** running [Bazzite](https://bazzite.gg/).

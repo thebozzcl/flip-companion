@@ -1,0 +1,24 @@
+#[colors]
+#background          = "#1a1a2e"
+#surface             = "#16213e"
+#interactive         = "#0f3460"
+#interactive_pressed = "#1a5276"
+#text_primary        = "#e0e0f0"
+#text_secondary      = "#a0a0b8"
+#accent              = "#e94560"
+#border              = "#2a2a4a"
+#running_app         = "#1a3a1a"
+#running_app_text    = "#90ee90"
+
+[colors]
+background          = "#171a21"
+surface             = "#232730"
+interactive         = "#292e37"
+interactive_pressed = "#66c0f4"
+text_primary        = "#e0e0f0"
+text_secondary      = "#a0a0b8"
+accent              = "#66c0f4"
+border              = "#adadad"
+running_app         = "#1a3a1a"
+running_app_text    = "#90ee90"
+

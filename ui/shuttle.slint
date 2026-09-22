@@ -3,15 +3,16 @@
 
 import { ShuttleStore } from "globals.slint";
 import { ListView } from "std-widgets.slint";
+import { AppStore } from "globals.slint";
 
 component ShuttleButton inherits Rectangle {
     in property <string> label;
     callback clicked();
 
-    width: 48px;
-    height: 48px;
+    width: (48px * AppStore.ui-scale);
+    height: (48px * AppStore.ui-scale);
     border-radius: 8px;
-    background: ta.pressed ? #1a5276 : #0f3460;
+    background: ta.pressed ? AppStore.color-interactive-pressed : AppStore.color-interactive;
 
     ta := TouchArea {
         clicked => { root.clicked(); }
@@ -19,8 +20,8 @@ component ShuttleButton inherits Rectangle {
 
     Text {
         text: label;
-        font-size: 20px;
-        color: #e0e0f0;
+        font-size: (20px * AppStore.ui-scale);
+        color: AppStore.color-text-primary;
         horizontal-alignment: center;
         vertical-alignment: center;
     }
@@ -33,7 +34,7 @@ component WindowRow inherits Rectangle {
     callback shuttle(string, string); // window_id, direction
 
     height: 64px;
-    background: #16213e;
+    background: AppStore.color-surface;
     border-radius: 8px;
 
     HorizontalLayout {
@@ -50,13 +51,13 @@ component WindowRow inherits Rectangle {
             Text {
                 text: caption;
                 font-size: 16px;
-                color: #e0e0f0;
+                color: AppStore.color-text-primary;
                 overflow: elide;
             }
             Text {
                 text: output == "" ? "unknown" : output;
                 font-size: 12px;
-                color: #808098;
+                color: AppStore.color-text-secondary;
                 overflow: elide;
             }
         }
@@ -76,7 +77,7 @@ export component Shuttle inherits Rectangle {
     callback shuttle-window(string, string); // window_id, direction
     callback request-refresh();
 
-    background: #1a1a2e;
+    background: AppStore.color-background;
 
     VerticalLayout {
         padding: 12px;
@@ -90,7 +91,7 @@ export component Shuttle inherits Rectangle {
             Text {
                 text: "Window Shuttle";
                 font-size: 22px;
-                color: #e0e0f0;
+                color: AppStore.color-text-primary;
                 vertical-alignment: center;
                 horizontal-stretch: 1;
             }
@@ -99,7 +100,7 @@ export component Shuttle inherits Rectangle {
                 width: 96px;
                 height: 48px;
                 border-radius: 8px;
-                background: refresh-ta.pressed ? #1a5276 : #0f3460;
+                background: refresh-ta.pressed ? AppStore.color-interactive-pressed : AppStore.color-interactive;
 
                 refresh-ta := TouchArea {
                     clicked => { root.request-refresh(); }
@@ -108,7 +109,7 @@ export component Shuttle inherits Rectangle {
                 Text {
                     text: "Refresh";
                     font-size: 16px;
-                    color: #e0e0f0;
+                    color: AppStore.color-text-primary;
                     horizontal-alignment: center;
                     vertical-alignment: center;
                 }
@@ -119,7 +120,7 @@ export component Shuttle inherits Rectangle {
         if ShuttleStore.windows.length == 0 : Text {
             text: "No windows. Tap Refresh.";
             font-size: 14px;
-            color: #808098;
+            color: AppStore.color-text-secondary;
             horizontal-alignment: center;
         }
 

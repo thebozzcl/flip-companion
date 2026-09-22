@@ -96,7 +96,7 @@ pub fn install_abort_guard() {
         // We do NOT set SA_RESTART — we want syscalls to return EINTR as
         // a fallback if the longjmp path isn't active.
         let mut sa: libc::sigaction = std::mem::zeroed();
-        sa.sa_sigaction = sigusr1_handler as usize;
+        sa.sa_sigaction = sigusr1_handler as *const () as usize;
         sa.sa_flags = libc::SA_SIGINFO;
         libc::sigemptyset(&mut sa.sa_mask);
         libc::sigaction(libc::SIGUSR1, &sa, std::ptr::null_mut());

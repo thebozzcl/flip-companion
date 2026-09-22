@@ -57,9 +57,16 @@ fn main() {
     let app = App::new().expect("failed to create Slint app");
     let app_weak = app.as_weak();
 
+    // Set font scaling
+    app.global::<AppStore>().set_ui_scale(config.ui_scale);
+
     // Load apps config and populate the AppStore.
     let apps = config::load_apps(&config);
     populate_app_store(&app, &apps);
+
+    // Apply theme
+    let theme = config::load_theme(&config);
+    apply_theme(&app, &theme);
 
     // Channel: UI → backend commands.
     let (tx, rx) = mpsc::channel::<UICommand>(100);
@@ -225,9 +232,16 @@ fn run_game_mode(socket_path: &str, config: &Config) {
     // Create the same App UI as desktop mode — Slint renders it into DRM buffers.
     let app = App::new().expect("failed to create Slint app (game mode)");
 
+    // Set font scaling
+    app.global::<AppStore>().set_ui_scale(config.ui_scale);
+
     // Load apps config and populate the AppStore.
     let apps = config::load_apps(config);
     populate_app_store(&app, &apps);
+        
+    // Apply theme
+    let theme = config::load_theme(&config);
+    apply_theme(&app, &theme);
 
     // Default to the Keyboard tab (index 0) — touch is working now.
     app.set_active_tab(0);
@@ -414,3 +428,25 @@ fn run_game_mode(socket_path: &str, config: &Config) {
 
     app.run().expect("Slint event loop failed (game mode)");
 }
+
+fn apply_theme(app: &App, theme: &config::ThemeColors) {
+    let store = app.global::<AppStore>();
+    store.set_color_background(slint::Color::from_argb_encoded(parse_hex(&theme.background)));
+    store.set_color_surface(slint::Color::from_argb_encoded(parse_hex(&theme.surface)));
+    store.set_color_interactive(slint::Color::from_argb_encoded(parse_hex(&theme.interactive)));
+    store.set_color_interactive_pressed(slint::Color::from_argb_encoded(parse_hex(&theme.interactive_pressed)));
+    store.set_color_text_primary(slint::Color::from_argb_encoded(parse_hex(&theme.text_primary)));
+    store.set_color_text_secondary(slint::Color::from_argb_encoded(parse_hex(&theme.text_secondary)));
+    store.set_color_accent(slint::Color::from_argb_encoded(parse_hex(&theme.accent)));
+    store.set_color_border(slint::Color::from_argb_encoded(parse_hex(&theme.border)));
+    store.set_color_running_app(slint::Color::from_argb_encoded(parse_hex(&theme.running_app)));
+    store.set_color_running_app_text(slint::Color::from_argb_encoded(parse_hex(&theme.running_app_text)));
+}
+
+/// Parse a "#rrggbb" string to a 0xAARRGGBB u32 (full alpha).
+fn parse_hex(s: &str) -> u32 {
+    let s = s.trim_start_matches('#');
+    let rgb = u32::from_str_radix(s, 16).unwrap_or(0x000000);
+    0xFF000000 | rgb
+}
+

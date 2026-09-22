@@ -40,4 +40,17 @@ export global AppStore {
     in-out property <[AppEntryData]> apps;
     in-out property <bool> is-running: false;
     in-out property <string> running-app-name: "";
+    in-out property <float> ui-scale: 1.0;
+
+    // Theme colors — set at startup from theme.toml
+    in-out property <color> color-background:          #1a1a2e;
+    in-out property <color> color-surface:             #16213e;
+    in-out property <color> color-interactive:         #0f3460;
+    in-out property <color> color-interactive-pressed: #1a5276;
+    in-out property <color> color-text-primary:        #e0e0f0;
+    in-out property <color> color-text-secondary:      #a0a0b8;
+    in-out property <color> color-accent:              #e94560;
+    in-out property <color> color-border:              #2a2a4a;
+    in-out property <color> color-running-app:         #1a3a1a;
+    in-out property <color> color-running-app-text:    #90ee90;
 }

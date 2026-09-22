@@ -21,7 +21,7 @@ component TabButton inherits Rectangle {
 
     horizontal-stretch: 1;
     border-radius: 8px;
-    background: active ? #0f3460 : transparent;
+    background: active ? AppStore.color-interactive : transparent;
 
     TouchArea {
         clicked => { root.clicked(); }
@@ -29,8 +29,8 @@ component TabButton inherits Rectangle {
 
     Text {
         text: label;
-        font-size: 22px;
-        color: active ? #e94560 : #a0a0b8;
+        font-size: (22px * AppStore.ui-scale);
+        color: active ? AppStore.color-accent : AppStore.color-text-secondary;
         horizontal-alignment: center;
         vertical-alignment: center;
     }
@@ -40,7 +40,7 @@ export component App inherits Window {
     title: "Flip Companion";
     preferred-width: 480px;
     preferred-height: 800px;
-    background: #1a1a2e;
+    background: AppStore.color-background;
 
     // Track which tab is active: 0=Keyboard, 1=Stats, 2=Apps
     in-out property <int> active-tab: 0;
@@ -83,15 +83,15 @@ export component App inherits Window {
 
         // Tab bar at the bottom — always visible
         Rectangle {
-            height: 56px;
-            background: #16213e;
+            height: (56px * AppStore.ui-scale);
+            background: AppStore.color-surface;
 
             HorizontalLayout {
                 padding: 4px;
                 spacing: 4px;
 
                 TabButton {
-                    label: "⌨️";
+                    label: "🔤";
                     active: active-tab == 0;
                     clicked => { active-tab = 0; root.active-tab-changed(0); }
                 }

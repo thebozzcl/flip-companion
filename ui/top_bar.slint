@@ -1,10 +1,11 @@
 // Top status bar — clock, game name, battery indicator.
 
 import { StatsStore } from "globals.slint";
+import { AppStore } from "globals.slint";
 
 export component TopBar inherits Rectangle {
-    height: 40px;
-    background: #16213e;
+    height: (40px * AppStore.ui-scale);
+    background: AppStore.color-surface;
 
     HorizontalLayout {
         padding-left: 16px;
@@ -14,16 +15,16 @@ export component TopBar inherits Rectangle {
         // Left: clock
         Text {
             text: StatsStore.clock-text;
-            font-size: 18px;
-            color: #e0e0f0;
+            font-size: 18px * AppStore.ui-scale;
+            color: AppStore.color-text-primary;
             vertical-alignment: center;
         }
 
         // Center: game name (hardcoded for now)
         Text {
             text: "Steam Game Mode";
-            font-size: 16px;
-            color: #a0a0b8;
+            font-size: 16px * AppStore.ui-scale;
+            color: AppStore.color-text-secondary;
             vertical-alignment: center;
             horizontal-alignment: center;
             overflow: elide;
@@ -35,8 +36,8 @@ export component TopBar inherits Rectangle {
             text: StatsStore.battery-charging
                 ? "⚡ " + Math.round(StatsStore.battery-percent) + "%"
                 : "🔋 " + Math.round(StatsStore.battery-percent) + "%";
-            font-size: 16px;
-            color: StatsStore.battery-percent < 20 ? #e94560 : #e0e0f0;
+            font-size: 16px * AppStore.ui-scale;
+            color: StatsStore.battery-percent < 20 ? AppStore.color-accent : AppStore.color-text-primary;
             vertical-alignment: center;
         }
     }

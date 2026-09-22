@@ -284,13 +284,18 @@ fn spawn_touch_thread(
     let (tx, rx) = mpsc::channel();
 
     std::thread::spawn(move || {
-        let dev = match evdev::Device::open(&path) {
+        let mut dev = match evdev::Device::open(&path) {
             Ok(d) => d,
             Err(e) => {
                 eprintln!("[touch] failed to open {:?}: {}", path, e);
                 return;
             }
         };
+
+        // Grab the device exclusively so gamescope doesn't also receive events
+        if let Err(e) = dev.grab() {
+            eprintln!("[touch] failed to grab device exclusively: {}", e);
+        }
 
         // Get ABS ranges for coordinate normalization
         let mut x_max: f32 = 1080.0;
@@ -416,6 +421,9 @@ pub struct DrmPlatform {
     control_tx: calloop::channel::Sender<CompositorCommand>,
     _compositor_handle: std::thread::JoinHandle<()>,
     _keyboard_handle: Option<std::thread::JoinHandle<()>>,
+    /// Last brightness percentage applied to the bottom screen (0–100).
+    /// Initialized to 255 (sentinel) so the first read always triggers a set.
+    last_brightness_pct: std::cell::Cell<u8>,
 }
 
 impl DrmPlatform {
@@ -447,7 +455,7 @@ impl DrmPlatform {
                 }
             }
         }
-        let mut gpu = gpu.ok_or_else(|| "GpuRenderer: failed after 5 attempts".to_string())?;
+        let gpu = gpu.ok_or_else(|| "GpuRenderer: failed after 5 attempts".to_string())?;
         // Consume the original lease_fd now that we've been duping it
         drop(lease_fd);
 
@@ -534,6 +542,7 @@ impl DrmPlatform {
             control_tx,
             _compositor_handle: compositor_handle,
             _keyboard_handle: None,
+            last_brightness_pct: std::cell::Cell::new(255),
         })
     }
 }
@@ -710,6 +719,29 @@ impl Platform for DrmPlatform {
                             cb(snap);
                         }
                     });
+                }
+            }
+            // ── Sync bottom-screen brightness from top-screen backlight ──
+            {
+                const BRIGHTNESS_PATH: &str =
+                    "/sys/class/backlight/amdgpu_bl1/brightness";
+                const MAX_PATH: &str =
+                    "/sys/class/backlight/amdgpu_bl1/max_brightness";
+
+                let read_u32 = |path: &str| -> Option<u32> {
+                    std::fs::read_to_string(path)
+                        .ok()
+                        .and_then(|s| s.trim().parse().ok())
+                };
+
+                if let (Some(cur), Some(max)) = (read_u32(BRIGHTNESS_PATH), read_u32(MAX_PATH)) {
+                    if max > 0 {
+                        let pct = ((cur * 100) / max).min(100).max(20) as u8;
+                        if pct != self.last_brightness_pct.get() {
+                            self.last_brightness_pct.set(pct);
+                            self.gpu.borrow().set_brightness(pct);
+                        }
+                    }
                 }
             }
 

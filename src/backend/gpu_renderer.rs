@@ -345,4 +345,39 @@ impl GpuRenderer {
         self.front = back;
         Ok(())
     }
+
+    /// Set bottom-screen brightness by scaling the CRTC gamma ramp.
+    /// `percent` is 0–100. 100 = full brightness (linear ramp), 0 = black.
+    pub fn set_brightness(&self, percent: u8) {
+        let pct = percent.min(100) as f32 / 100.0;
+
+        // Get the gamma ramp size the CRTC expects.
+        let size = match self.drm.get_crtc(self.crtc) {
+            Ok(info) => info.gamma_length() as usize,
+            Err(e) => {
+                eprintln!("[brightness] get_crtc failed: {e}");
+                return;
+            }
+        };
+        if size == 0 {
+            return;
+        }
+
+        // Build a scaled linear ramp.
+        let ramp: Vec<u16> = (0..size)
+            .map(|i| {
+                let linear = i as f32 / (size - 1) as f32;
+                // Apply a power curve to pct so perceived brightness tracks
+                // more naturally. Without this, 50% feels much dimmer than
+                // half-brightness because human vision is non-linear.
+                // Exponent 0.45 ≈ inverse of sRGB gamma (1/2.2).
+                let pct_perceptual = pct.powf(0.45);
+                (linear * pct_perceptual * 65535.0).round() as u16
+            })
+            .collect();
+
+        if let Err(e) = self.drm.set_gamma(self.crtc, &ramp, &ramp, &ramp) {
+            eprintln!("[brightness] set_gamma failed: {e}");
+        }
+    }
 }

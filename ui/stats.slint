@@ -2,19 +2,20 @@
 
 import { StatsStore } from "globals.slint";
 import { StatCard } from "stat_card.slint";
+import { AppStore } from "globals.slint";
 
 export component Stats inherits Rectangle {
-    background: #1a1a2e;
+    background: AppStore.color-background;
 
     // Color helpers — pure functions for threshold-based accent colors.
     pure function pct-color(val: float) -> color {
-        if val >= 85 { return #e94560; }
+        if val >= 85 { return AppStore.color-accent; }
         if val >= 60 { return #f0a500; }
         return #2ecc71;
     }
 
     pure function temp-color(val: float) -> color {
-        if val >= 85 { return #e94560; }
+        if val >= 85 { return AppStore.color-accent; }
         if val >= 65 { return #f0a500; }
         return #2ecc71;
     }
@@ -84,14 +85,14 @@ export component Stats inherits Rectangle {
             // Placeholder for future FPS card
             Rectangle {
                 horizontal-stretch: 1;
-                background: #16213e;
+                background: AppStore.color-surface;
                 border-radius: 10px;
                 opacity: 0.3;
 
                 Text {
                     text: "FPS\n(coming soon)";
-                    font-size: 14px;
-                    color: #a0a0b8;
+                    font-size: (14px * AppStore.ui-scale);
+                    color: AppStore.color-text-secondary;
                     horizontal-alignment: center;
                     vertical-alignment: center;
                 }

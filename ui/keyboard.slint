@@ -1,4 +1,5 @@
 // Keyboard panel — full QWERTY virtual on-screen keyboard.
+import { AppStore } from "globals.slint";
 
 component KeyCap inherits Rectangle {
     in property <string> label;
@@ -8,9 +9,9 @@ component KeyCap inherits Rectangle {
     horizontal-stretch: stretch;
     min-height: 48px;
     border-radius: 6px;
-    background: ta.pressed ? #0f3460 : #16213e;
+    background: ta.pressed ? AppStore.color-interactive : AppStore.color-surface;
     border-width: 1px;
-    border-color: #2a2a4a;
+    border-color: AppStore.color-border;
 
     ta := TouchArea {
         clicked => { root.tapped(); }
@@ -18,8 +19,8 @@ component KeyCap inherits Rectangle {
 
     Text {
         text: root.label;
-        font-size: 18px;
-        color: #e0e0f0;
+        font-size: (18px * AppStore.ui-scale);
+        color: AppStore.color-text-primary;
         horizontal-alignment: center;
         vertical-alignment: center;
     }
@@ -30,7 +31,7 @@ export component Keyboard inherits Rectangle {
 
     in-out property <bool> shift-active: false;
 
-    background: #1a1a2e;
+    background: AppStore.color-background;
 
     VerticalLayout {
         padding: 6px;

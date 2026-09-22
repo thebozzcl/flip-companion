@@ -12,9 +12,9 @@ component AppTile inherits Rectangle {
     callback tapped(int);
 
     width: 100%;
-    height: 80px;
+    height: 80px * AppStore.ui-scale;
     border-radius: 12px;
-    background: ta.pressed ? #1a5276 : #0f3460;
+    background: ta.pressed ? AppStore.color-interactive-pressed : AppStore.color-interactive;
 
     ta := TouchArea {
         clicked => { root.tapped(root.index); }
@@ -28,14 +28,14 @@ component AppTile inherits Rectangle {
 
         Text {
             text: icon;
-            font-size: 28px;
+            font-size: 28px * AppStore.ui-scale;
             vertical-alignment: center;
         }
 
         Text {
             text: name;
-            font-size: 18px;
-            color: #e0e0f0;
+            font-size: 18px * AppStore.ui-scale;
+            color: AppStore.color-text-primary;
             vertical-alignment: center;
             horizontal-stretch: 1;
             overflow: elide;
@@ -47,7 +47,7 @@ export component Apps inherits Rectangle {
     callback launch-app(int);
     callback close-app();
 
-    background: #1a1a2e;
+    background: AppStore.color-background;
 
     VerticalLayout {
         padding: 12px;
@@ -55,9 +55,9 @@ export component Apps inherits Rectangle {
 
         // Running app banner
         if AppStore.is-running : Rectangle {
-            height: 56px;
+            height: 56px * AppStore.ui-scale;
             border-radius: 8px;
-            background: #1a3a1a;
+            background: AppStore.color-running-app;
 
             HorizontalLayout {
                 padding-left: 16px;
@@ -67,8 +67,8 @@ export component Apps inherits Rectangle {
 
                 Text {
                     text: "Running: " + AppStore.running-app-name;
-                    font-size: 16px;
-                    color: #90ee90;
+                    font-size: 16px * AppStore.ui-scale;
+                    color: AppStore.color-running-app-text;
                     vertical-alignment: center;
                     horizontal-stretch: 1;
                     overflow: elide;
@@ -79,15 +79,15 @@ export component Apps inherits Rectangle {
         // Header
         if !AppStore.is-running : Text {
             text: "Apps";
-            font-size: 22px;
-            color: #e0e0f0;
+            font-size: 22px * AppStore.ui-scale;
+            color: AppStore.color-text-primary;
         }
 
         // Empty state
         if AppStore.apps.length == 0 && !AppStore.is-running : Text {
             text: "No apps configured.\nEdit apps.toml to add apps.";
-            font-size: 14px;
-            color: #808098;
+            font-size: 14px * AppStore.ui-scale;
+            color: AppStore.color-text-secondary;
             horizontal-alignment: center;
         }
 

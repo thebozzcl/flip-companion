@@ -19,13 +19,6 @@ icon = "💬"
 exec = "flatpak run com.discordapp.Discord"
 
 [[app]]
-name = "YouTube"
-icon = "▶️"
-exec = "flatpak run org.mozilla.firefox"
-url = "https://www.youtube.com"
-
-[[app]]
-name = "Steam Chat"
-icon = "💭"
-exec = "flatpak run com.valvesoftware.Steam"
-url = "steam://open/friends"
+name = "Spotify"
+icon = "🎵"
+exec = "flatpak run com.spotify.Client"
